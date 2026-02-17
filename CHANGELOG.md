@@ -1,3 +1,8 @@
+## [0.2.0] - 2026-02-17
+
+### 🚀 Features
+
+- Add custom data type handling and improve dialect resolution
 ## [0.1.3] - 2026-02-17
 
 ### 🚜 Refactor
