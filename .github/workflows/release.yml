@@ -1,0 +1,58 @@
+name: Release
+
+on:
+  pull_request_target:
+    types: [closed]
+    branches:
+      - main
+
+jobs:
+  release:
+    name: Release
+    if: ${{ github.event.pull_request.merged == true }}
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.base.ref }}
+          fetch-depth: 0
+
+      - name: Install git-cliff
+        uses: taiki-e/install-action@git-cliff
+
+      - name: Get next version
+        id: next_version
+        run: |
+          NEXT_VERSION=$(git-cliff --config .config/cliff.toml --bumped-version)
+          echo "version=${NEXT_VERSION}" >> $GITHUB_OUTPUT
+          echo "Next version: ${NEXT_VERSION}"
+
+      - name: Update pyproject.toml
+        run: |
+          NEW_VERSION=${{ steps.next_version.outputs.version }}
+          # Remove 'v' prefix if present for pyproject.toml
+          CLEAN_VERSION=$(echo $NEW_VERSION | sed 's/^v//')
+          sed -i "s/^version = \".*\"/version = \"$CLEAN_VERSION\"/" pyproject.toml
+
+      - name: Update Changelog
+        run: |
+          git-cliff --config .config/cliff.toml --bump -o CHANGELOG.md
+
+      - name: Commit and push changes
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add CHANGELOG.md pyproject.toml
+          git commit -m "chore(release): prepare for ${{ steps.next_version.outputs.version }}"
+          git push origin main
+
+      - name: Create Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ steps.next_version.outputs.version }}
+          name: Release ${{ steps.next_version.outputs.version }}
+          body_path: CHANGELOG.md
+          generate_release_notes: false

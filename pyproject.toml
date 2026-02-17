@@ -1,0 +1,27 @@
+[project]
+name = "Bifrost"
+version = "0.1.0"
+license = "MIT"
+license-files = ["LICENSE"]
+description = "Creates dynamic data models based on the Polyglot Data Model."
+readme = "README.md"
+authors = [
+  {name = "Thiago Dias", email = "thiago@yggdrasil.codes"}
+]
+requires-python = ">=3.13"
+dependencies = [
+    "dotenv>=0.9.9",
+    "duckdb>=1.4.4",
+    "git-cliff>=2.12.0",
+    "glom>=25.12.0",
+    "jinja2>=3.1.6",
+    "midgard>=0.1.0",
+    "psycopg[binary]>=3.3.2",
+    "pydantic>=2.12.5",
+    "python-dateutil>=2.9.0.post0",
+    "ruff>=0.15.1",
+    "tabulate>=0.9.0",
+]
+
+[tool.uv.sources]
+midgard = { git = "https://github.com/TheAldersonProject/midgard.git" }
