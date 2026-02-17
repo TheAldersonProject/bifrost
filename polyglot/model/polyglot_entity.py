@@ -15,7 +15,7 @@ class ColumnDataType(PolyglotBaseModel):
     """Polyglot Db Entity Column Data Type"""
 
     name: str = Field(..., description="Column data type")
-    logical: str = Field(default=None, description="Column data type value", examples=["string, int, float"])
+    logical: Any = Field(default=None, description="Column data type value", examples=["str", "int", "float", "dict"])
     specific_physical: str | None = Field(default=None, description="Specific data type physical value")
     regex_pattern: str | None = Field(default=None, description="Regex pattern")
 
