@@ -1,3 +1,8 @@
+## [0.1.3] - 2026-02-17
+
+### 🚜 Refactor
+
+- *(driver)* Remove unused `_dialect` method and simplify logical type assignment
 ## [0.1.2] - 2026-02-17
 
 ### 🐛 Bug Fixes
