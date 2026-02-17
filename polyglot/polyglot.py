@@ -14,8 +14,10 @@ class PolyglotBaseConfig:
     def __init__(self, config: PolyglotConfig | None = None):
         """Initialize Polyglot Service"""
 
-        if not config:
-            raise ValueError("Polyglot Config must be provided.")
+        self._config = config
+
+    def set_config(self, config: PolyglotConfig):
+        """Set the Polyglot Config"""
 
         self._config = config
 
@@ -38,7 +40,7 @@ class Polyglot:
 
         from polyglot.core.driver import Driver
 
-        PolyglotBaseConfig(config)
+        PolyglotBaseConfig().set_config(config)
         self._driver = Driver()
 
     @property
