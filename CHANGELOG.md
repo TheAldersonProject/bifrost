@@ -1,3 +1,8 @@
+## [0.3.2] - 2026-02-17
+
+### 🚜 Refactor
+
+- *(polyglot)* Add `set_config` method for improved config management
 ## [0.3.1] - 2026-02-17
 
 ### 🐛 Bug Fixes
