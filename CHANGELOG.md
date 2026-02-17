@@ -1,3 +1,8 @@
+## [0.1.2] - 2026-02-17
+
+### 🐛 Bug Fixes
+
+- *(driver)* Remove unused `specific_physical` fallback in logical type mapping
 ## [0.1.1] - 2026-02-17
 
 ### 🐛 Bug Fixes
