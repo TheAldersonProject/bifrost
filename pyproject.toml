@@ -1,6 +1,6 @@
 [project]
 name = "Bifrost"
-version = "0.3.3"
+version = "0.3.4"
 license = "MIT"
 license-files = ["LICENSE"]
 description = "Creates dynamic data models based on the Polyglot Data Model."

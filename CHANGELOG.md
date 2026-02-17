@@ -1,3 +1,8 @@
+## [0.3.4] - 2026-02-17
+
+### 🐛 Bug Fixes
+
+- *(connector)* Resolve nullable check and improve instruction formatting
 ## [0.3.3] - 2026-02-17
 
 ### 🐛 Bug Fixes
