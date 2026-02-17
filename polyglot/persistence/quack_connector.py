@@ -234,7 +234,7 @@ class QuackConnector:
     def write(self, duckdb_instructions: list[str], ducklake_instructions: list[str]) -> Self:
         """Configure Quack Driver."""
 
-        self.logs.info("Setting up Quack Resources.")
+        self.logs.info("Setting up Quack Resources!")
 
         ducklake_map = self._ducklake_setup()
 
