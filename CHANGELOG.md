@@ -1,3 +1,12 @@
+## [0.3.5] - 2026-02-17
+
+### 🐛 Bug Fixes
+
+- *(connector)* Correct instruction concatenation and bump bifrost to 0.3.3
+
+### ⚙️ Miscellaneous Tasks
+
+- *(connector)* Update log message in `write` method
 ## [0.3.4] - 2026-02-17
 
 ### 🐛 Bug Fixes
