@@ -251,7 +251,7 @@ class QuackConnector:
         ]
 
         base_instructions = "\n".join(instructions) + "\n"
-        instructions = [base_instructions] + {duckdb_instructions} + {ducklake_instructions}
+        instructions = [base_instructions] + duckdb_instructions + ducklake_instructions
 
         self._execute_instructions(instructions)
         return self
