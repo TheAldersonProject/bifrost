@@ -1,3 +1,8 @@
+## [0.3.1] - 2026-02-17
+
+### 🐛 Bug Fixes
+
+- *(connector)* Refine data type handling and bump bifrost version
 ## [0.3.0] - 2026-02-17
 
 ### 🚀 Features
