@@ -1,7 +1,6 @@
 """Polyglot Driver"""
 
 import re
-from datetime import datetime
 from typing import Annotated, Any, Literal, Optional, Type, Union
 
 from midgard.logs import Logger
@@ -31,13 +30,6 @@ class Driver:
 
         return self._driver
 
-    @staticmethod
-    def _dialect(value: Any) -> str | None:
-        """Build the dialect."""
-
-        logical_type = {"string": str, "int": int, "integer": int, "timestamp": datetime}
-        return logical_type.get(value.logical.lower().strip(), None)
-
     def _build_polyglot_driver(self) -> None:
         """Build the dynamic model instances."""
 
@@ -53,7 +45,7 @@ class Driver:
                 pattern=col.data_type.regex_pattern,
             )
 
-            logical_type = self._dialect(col.data_type)
+            logical_type = col.data_type
             if col.enum and isinstance(col.enum, list):
                 logical_type = Literal[tuple(col.enum)]  # type: ignore
 
