@@ -1,3 +1,8 @@
+## [0.3.0] - 2026-02-17
+
+### 🚀 Features
+
+- *(driver)* Simplify logical type assignment and update bifrost version
 ## [0.2.0] - 2026-02-17
 
 ### 🚀 Features
