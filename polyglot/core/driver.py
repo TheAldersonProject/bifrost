@@ -36,7 +36,7 @@ class Driver:
         """Build the dialect."""
 
         logical_type = {"string": str, "int": int, "integer": int, "timestamp": datetime}
-        return value.specific_physical or logical_type.get(value.logical.lower().strip(), None)
+        return logical_type.get(value.logical.lower().strip(), None)
 
     def _build_polyglot_driver(self) -> None:
         """Build the dynamic model instances."""
