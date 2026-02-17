@@ -111,11 +111,12 @@ class QuackConnector:
 
         elif entity_type == QuackType.DUCKDB:
             default_value: str = ""
-            nullable: str = "" if not column.nullable else " NOT NULL"
+            nullable: str = "" if column.nullable else " NOT NULL"
 
             if column.enum:
                 data_type: str = f""" ENUM({", ".join(["'" + enum_ + "'" for enum_ in column.enum])}) """
                 check_constraint: str | None = None
+
             else:
                 data_type: str = QuackConnector._dialect(column.data_type)
                 check_constraint: str | None = None
@@ -126,7 +127,7 @@ class QuackConnector:
                     )
                     check_constraint = f" CHECK ({column_check_constraint})"
 
-            if column.default_value or column.default_value_function:
+            if default_value not in ("None", ...) and (column.default_value or column.default_value_function):
                 if data_type.upper() in ("TIMESTAMP", "TIMESTAMPTZ", "TIMESTAMP_LTZ", "BIGINT", "INTEGER"):
                     if column.default_value_function:
                         default_value = f" DEFAULT {column.default_value_function}"
@@ -249,8 +250,8 @@ class QuackConnector:
             ducklake_map.attach_duck_lake,
         ]
 
-        base_instructions = "".join(instructions) + "\n"
-        instructions = [base_instructions] + duckdb_instructions + ducklake_instructions
+        base_instructions = "\n".join(instructions) + "\n"
+        instructions = [base_instructions] + f"\n{duckdb_instructions}" + f"\n{ducklake_instructions}"
 
         self._execute_instructions(instructions)
         return self
