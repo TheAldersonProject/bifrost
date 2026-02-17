@@ -1,10 +1,11 @@
 """Quack is a DuckDB and DuckLake connector."""
 
-from typing import Self
+from typing import Any, Self
 
 import duckdb
 from midgard.logs import Logger
 
+from polyglot.model.custom import get_data_type
 from polyglot.model.enums import QuackType
 from polyglot.model.polyglot_config import PolyglotConfig
 from polyglot.model.polyglot_entity import ColumnDataType, EntityColumn, PolyglotBaseModel
@@ -43,11 +44,13 @@ class QuackConnector:
         self._duck_db_connector: _QuackResource | None = self._duckdb_setup()
 
     @staticmethod
-    def _dialect(value: ColumnDataType) -> str | None:
+    def _dialect(value: ColumnDataType) -> Any | None:
         """Build the dialect."""
 
-        logical_type = {"string": "varchar", "int": "bigint", "integer": "bigint", "timestamp": "bigint"}
-        return value.specific_physical or logical_type.get(value.logical.lower().strip(), None)
+        if value.specific_physical:
+            return value.specific_physical
+
+        return get_data_type(value.name, "physical")
 
     def _schema_ddl(self, quack_type: QuackType) -> str:
         """Get the DuckDb schema ddl."""
@@ -101,7 +104,7 @@ class QuackConnector:
         if entity_type == QuackType.DUCKLAKE:
             column_ddl_definition = duck_lake_column_spec.format(
                 name=column_name.lower(),
-                type=QuackConnector._dialect(column.data_type),
+                type=QuackConnector._dialect(column.data_type).get("type"),
             )
 
         elif entity_type == QuackType.DUCKDB:
@@ -112,7 +115,7 @@ class QuackConnector:
                 data_type: str = f""" ENUM({", ".join(["'" + enum_ + "'" for enum_ in column.enum])}) """
                 check_constraint: str | None = None
             else:
-                data_type: str = QuackConnector._dialect(column.data_type)
+                data_type: str = QuackConnector._dialect(column.data_type).get("type")
                 check_constraint: str | None = None
 
                 if column.data_type.regex_pattern:

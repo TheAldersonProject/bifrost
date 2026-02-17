@@ -7,6 +7,7 @@ from midgard.logs import Logger
 from pydantic import AliasChoices, ConfigDict, Field, create_model
 
 from polyglot.core.shared_model import PolyglotModelMixin
+from polyglot.model.custom import get_data_type
 from polyglot.model.polyglot_config import PolyglotConfig
 from polyglot.model.polyglot_entity import PolyglotBaseModel
 from polyglot.polyglot import PolyglotBaseConfig
@@ -30,6 +31,15 @@ class Driver:
 
         return self._driver
 
+    @staticmethod
+    def _dialect(value: Any) -> Any | None:
+        """Build the dialect."""
+
+        if not isinstance(value, str):
+            return value
+
+        return get_data_type(value, "logical")
+
     def _build_polyglot_driver(self) -> None:
         """Build the dynamic model instances."""
 
@@ -37,6 +47,8 @@ class Driver:
 
         fields_map: dict[str, Any] = {}
         for col in self.config.polyglot_entity.columns:
+            logical_type = self._dialect(col.data_type.name)
+
             field = Field(
                 default=col.default_value,
                 validation_alias=AliasChoices(col.name, col.alias or col.name),
@@ -45,11 +57,12 @@ class Driver:
                 pattern=col.data_type.regex_pattern,
             )
 
-            logical_type = col.data_type
             if col.enum and isinstance(col.enum, list):
                 logical_type = Literal[tuple(col.enum)]  # type: ignore
 
-            annotated_field = Annotated[logical_type if not col.nullable else Optional[logical_type], field]
+            annotated_field = Annotated[
+                logical_type["type"] if not col.nullable else Optional[logical_type["type"]], field
+            ]
             fields_map[col.name] = annotated_field
 
         instance = create_model(
