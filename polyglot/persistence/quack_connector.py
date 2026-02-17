@@ -50,7 +50,9 @@ class QuackConnector:
         if value.specific_physical:
             return value.specific_physical
 
-        return get_data_type(value.name, "physical")
+        value = get_data_type(value.name, "physical").get("type")
+
+        return value
 
     def _schema_ddl(self, quack_type: QuackType) -> str:
         """Get the DuckDb schema ddl."""
@@ -104,7 +106,7 @@ class QuackConnector:
         if entity_type == QuackType.DUCKLAKE:
             column_ddl_definition = duck_lake_column_spec.format(
                 name=column_name.lower(),
-                type=QuackConnector._dialect(column.data_type).get("type"),
+                type=QuackConnector._dialect(column.data_type),
             )
 
         elif entity_type == QuackType.DUCKDB:
@@ -115,7 +117,7 @@ class QuackConnector:
                 data_type: str = f""" ENUM({", ".join(["'" + enum_ + "'" for enum_ in column.enum])}) """
                 check_constraint: str | None = None
             else:
-                data_type: str = QuackConnector._dialect(column.data_type).get("type")
+                data_type: str = QuackConnector._dialect(column.data_type)
                 check_constraint: str | None = None
 
                 if column.data_type.regex_pattern:
