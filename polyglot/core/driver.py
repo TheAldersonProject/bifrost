@@ -57,12 +57,11 @@ class Driver:
                 pattern=col.data_type.regex_pattern,
             )
 
+            logical_type = logical_type["type"]
             if col.enum and isinstance(col.enum, list):
                 logical_type = Literal[tuple(col.enum)]  # type: ignore
 
-            annotated_field = Annotated[
-                logical_type["type"] if not col.nullable else Optional[logical_type["type"]], field
-            ]
+            annotated_field = Annotated[logical_type if not col.nullable else Optional[logical_type], field]
             fields_map[col.name] = annotated_field
 
         instance = create_model(
