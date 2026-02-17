@@ -1,3 +1,8 @@
+## [0.3.3] - 2026-02-17
+
+### 🐛 Bug Fixes
+
+- *(driver)* Adjust column default value handling and bump bifrost to 0.3.1
 ## [0.3.2] - 2026-02-17
 
 ### 🚜 Refactor
