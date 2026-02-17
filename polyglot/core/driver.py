@@ -49,6 +49,13 @@ class Driver:
         for col in self.config.polyglot_entity.columns:
             logical_type = self._dialect(col.data_type.name)
 
+            logical_type = logical_type["type"]
+            if col.enum and isinstance(col.enum, list):
+                logical_type = Literal[tuple(col.enum)]  # type: ignore
+
+            if not col.nullable and not col.default_value:
+                col.default_value = ...
+
             field = Field(
                 default=col.default_value,
                 validation_alias=AliasChoices(col.name, col.alias or col.name),
@@ -56,10 +63,6 @@ class Driver:
                 examples=col.examples,
                 pattern=col.data_type.regex_pattern,
             )
-
-            logical_type = logical_type["type"]
-            if col.enum and isinstance(col.enum, list):
-                logical_type = Literal[tuple(col.enum)]  # type: ignore
 
             annotated_field = Annotated[logical_type if not col.nullable else Optional[logical_type], field]
             fields_map[col.name] = annotated_field
