@@ -1,3 +1,8 @@
+## [0.3.6] - 2026-02-17
+
+### 🐛 Bug Fixes
+
+- *(connector)* Correct instruction concatenation logic in `QuackConnector`
 ## [0.3.5] - 2026-02-17
 
 ### 🐛 Bug Fixes
