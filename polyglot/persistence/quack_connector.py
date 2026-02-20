@@ -127,7 +127,7 @@ class QuackConnector:
                     )
                     check_constraint = f" CHECK ({column_check_constraint})"
 
-            if (column.default_value or column.default_value_function) and default_value not in [
+            if (column.default_value or column.default_value_function) and column.default_value not in [
                 "None",
                 ...,
                 None,
@@ -151,7 +151,7 @@ class QuackConnector:
                 else:
                     default_value = f" DEFAULT {column.default_value}"
 
-            if default_value in ["None", ..., None, "Ellipsis", "'Ellipsis'"]:
+            if column.default_value in ["None", ..., None, "Ellipsis", "'Ellipsis'"]:
                 default_value = ""
 
             column_ddl_definition = duck_db_column_spec.format(
