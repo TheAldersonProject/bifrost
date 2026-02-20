@@ -1,3 +1,8 @@
+## [0.3.8] - 2026-02-20
+
+### 🐛 Bug Fixes
+
+- *(quack_connector)* Add "Ellipsis" handling for default_value in column definition
 ## [0.3.7] - 2026-02-20
 
 ### 🐛 Bug Fixes
