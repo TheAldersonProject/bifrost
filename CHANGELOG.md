@@ -1,3 +1,8 @@
+## [0.3.9] - 2026-02-20
+
+### 🐛 Bug Fixes
+
+- *(quack_connector)* Refine default_value checks in column definition
 ## [0.3.8] - 2026-02-20
 
 ### 🐛 Bug Fixes
