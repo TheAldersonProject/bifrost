@@ -1,3 +1,8 @@
+## [0.3.10] - 2026-02-20
+
+### 🐛 Bug Fixes
+
+- *(quack_connector)* Correct variable used for default_value validation in column definition
 ## [0.3.9] - 2026-02-20
 
 ### 🐛 Bug Fixes
