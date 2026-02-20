@@ -127,7 +127,9 @@ class QuackConnector:
                     )
                     check_constraint = f" CHECK ({column_check_constraint})"
 
-            if default_value not in ("None", ...) and (column.default_value or column.default_value_function):
+            if default_value not in ("None", ..., "Ellipsis") and (
+                column.default_value or column.default_value_function
+            ):
                 if data_type.upper() in ("TIMESTAMP", "TIMESTAMPTZ", "TIMESTAMP_LTZ", "BIGINT", "INTEGER"):
                     if column.default_value_function:
                         default_value = f" DEFAULT {column.default_value_function}"
@@ -146,7 +148,7 @@ class QuackConnector:
                 else:
                     default_value = f" DEFAULT {column.default_value}"
 
-            if default_value in ("None", ..., None):
+            if default_value in ("None", ..., None, "Ellipsis"):
                 default_value = ""
 
             column_ddl_definition = duck_db_column_spec.format(
