@@ -1,3 +1,8 @@
+## [0.3.7] - 2026-02-20
+
+### 🐛 Bug Fixes
+
+- *(quack_connector)* Handle invalid default_value cases during column definition
 ## [0.3.6] - 2026-02-17
 
 ### 🐛 Bug Fixes
