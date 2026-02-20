@@ -146,6 +146,9 @@ class QuackConnector:
                 else:
                     default_value = f" DEFAULT {column.default_value}"
 
+            if default_value in ("None", ..., None):
+                default_value = ""
+
             column_ddl_definition = duck_db_column_spec.format(
                 default_value=default_value or "",
                 name=column_name.lower(),
