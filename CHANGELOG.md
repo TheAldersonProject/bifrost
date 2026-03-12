@@ -1,3 +1,9 @@
+## [0.3.11] - 2026-03-12
+
+### 🚜 Refactor
+
+- *(model)* Remove legacy `polyglot` module and replace with `bifrost` architecture
+- *(persistence)* Replace `polyglot` with `bifrost`, introduce `S3Connector` and improve database setup
 ## [0.3.10] - 2026-02-20
 
 ### 🐛 Bug Fixes
