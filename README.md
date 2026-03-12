@@ -36,13 +36,13 @@ Below is a minimal end-to-end example showing how to:
 - Write a record
 
 ```python
-from polyglot.model.database_config import DatabaseConfig
-from polyglot.model.object_storage_config import S3Config
-from polyglot.model.polyglot_config import PolyglotConfig
-from polyglot.model.polyglot_entity import (
+from bifrost.model.database_config import DatabaseConfig
+from bifrost.model.object_storage_config import S3Config
+from bifrost.model.polyglot_config import PolyglotConfig
+from bifrost.model.polyglot_entity import (
     ColumnDataType, Entity, EntityColumn,
 )
-from polyglot.polyglot import SugarPolyglot
+from bifrost.main import SugarPolyglot
 
 # 1) Describe your entity
 entity = Entity(
@@ -107,10 +107,11 @@ Notes:
 - If you prefer more control, you can use the lower-level `Polyglot` class:
 
 ```python
-from polyglot.polyglot import Polyglot
-poly = Polyglot(config)
-poly.create()     # create DDL
-poly.write()      # write using config.data
+from bifrost.main import Bifrost
+
+poly = Bifrost(config)
+poly.create()  # create DDL
+poly.write()  # write using config.data
 ```
 
 ## How it works (short)
