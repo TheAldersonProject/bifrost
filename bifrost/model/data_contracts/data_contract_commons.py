@@ -21,6 +21,7 @@ from sqlalchemy.dialects.postgresql import (
 from sqlalchemy.sql.ddl import CreateSchema
 from sqlmodel import Session, SQLModel, inspect
 
+from bifrost.core.driver import DatabaseDriver
 from bifrost.core.orm import Orm
 
 SEMANTICAL_VERSION_PATTERN: str = r"^(?P<major>0|[1-9]\d*)\.(?P<minor>0|[1-9]\d*)\.(?P<patch>0|[1-9]\d*)(?:-(?P<prerelease>(?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*)(?:\.(?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*))*))?(?:\+(?P<buildmetadata>[0-9a-zA-Z-]+(?:\.[0-9a-zA-Z-]+)*))?$"
@@ -63,7 +64,8 @@ class CommonModel(SQLModel):
     def add(self) -> None:
         """Write the model to the database."""
 
-        with Session(Orm().engine) as session:
+        engine = DatabaseDriver().orm.get_engine("pg_bifrost")
+        with Session(engine) as session:
             session.add(self)
             session.commit()
             session.refresh(self)
@@ -71,7 +73,8 @@ class CommonModel(SQLModel):
     def update(self) -> None:
         """Update the model to the database."""
 
-        with Session(Orm().engine) as session:
+        engine = DatabaseDriver().orm.get_engine("pg_bifrost")
+        with Session(engine) as session:
             session.add(self)
             session.commit()
             session.refresh(self)
@@ -175,10 +178,18 @@ class CommonModel(SQLModel):
                 raise e
 
     @classmethod
-    def create_table(cls, engine: Engine, checkfirst: bool = True, create_schema: bool = True) -> None:
+    def create_table(
+        cls,
+        engine: Engine,
+        checkfirst: bool = True,
+        create_schema: bool = True,
+        drop_before_create: bool = False,
+    ) -> None:
         """Create the table."""
 
         if create_schema:
             cls._create_schema(engine=engine)
 
+        if drop_before_create:
+            cls.metadata.drop_all(bind=engine, checkfirst=True)
         cls.metadata.create_all(bind=engine, checkfirst=checkfirst)

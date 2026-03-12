@@ -15,6 +15,9 @@ class ContractSchemaPropertyModel(CommonModel):
     __relationship_map__ = {"none": ""}
     __composed_id_prefix__ = "dc-schema-property"
     __composed_id_columns__ = ["physical_name", "logical_type"]
+    __ignore_on_hash__ = [
+        "record_hash",
+    ]
 
     id: str | None = Field(
         default=None,
@@ -244,7 +247,7 @@ class ContractSchemaPropertyModel(CommonModel):
     unique: bool | None = Field(
         default=False,
         sa_column=Column(
-            name="unique",
+            name="is_unique",
             type_=p.BOOLEAN_TYPE.value,
             primary_key=False,
             index=False,
@@ -367,8 +370,8 @@ class ContractSchemaPropertyModel(CommonModel):
         sa_column=Column(
             name="record_hash",
             type_=p.VARCHAR_TYPE.value,
-            primary_key=True,
-            index=True,
+            primary_key=False,
+            index=False,
             autoincrement=False,
             nullable=True,
             comment="The hash of the record.",

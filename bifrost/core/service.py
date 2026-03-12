@@ -1,14 +1,13 @@
 """Bifrost Service"""
 
-import os
-
 from midgard.logs import Logger
+from sqlalchemy import Engine
 from sqlalchemy.orm import selectinload
 from sqlmodel import Session, select
 
-from bifrost.core.orm import Orm, OrmConfig, OrmRelationalDatabaseConfig, OrmType
+from bifrost.core.driver import DatabaseDriver
+from bifrost.core.release import ObjectStorageRelease
 from bifrost.model.data_contracts.contract import Contract, ContractSchema
-from bifrost.persistence.postgres_connector import PgDuckDbConnector
 
 
 class Service:
@@ -18,51 +17,23 @@ class Service:
         """Initialize Service"""
 
         self.logs = Logger.get_logger(logger_name=self.__class__.__name__)
+        self._bifrost_orm: Engine = DatabaseDriver().orm.get_engine("pg_bifrost")
 
-    def setup(self, checkfirst: bool = True) -> None:
+    def setup(self, checkfirst: bool = True, drop_before_create: bool = False) -> None:
         """Sets up the Bifrost Service"""
 
-        bifrost_setup_database_params = dict(
-            host="BIFROST_SETUP_DATABASE_HOST",
-            name="BIFROST_SETUP_DATABASE_NAME",
-            user="BIFROST_SETUP_DATABASE_USER",
-            password="BIFROST_SETUP_DATABASE_PASSWORD",
-            port="BIFROST_SETUP_DATABASE_PORT",
-        )
+        self.logs.debug("Starting Bifrost setup.")
+        from bifrost.core.release import DatabaseRelease
 
-        bifrost_database_params = dict(
-            host="BIFROST_DB_HOST",
-            name="BIFROST_DB_NAME",
-            user="BIFROST_DB_USER",
-            password="BIFROST_DB_PASSWORD",
-            port="BIFROST_DB_PORT",
-        )
+        DatabaseRelease().setup(checkfirst=checkfirst, drop_before_create=drop_before_create)
+        ObjectStorageRelease().setup()
 
-        bifrost_setup = OrmConfig(
-            type=OrmType.PG_BIFROST_SETUP,
-            parameters=OrmRelationalDatabaseConfig(**bifrost_setup_database_params),
-        )
-
-        bifrost = OrmConfig(
-            type=OrmType.PG_BIFROST,
-            parameters=OrmRelationalDatabaseConfig(**bifrost_database_params),
-        )
-
-        orm = Orm(config=[bifrost_setup, bifrost])
-        setup_engine = orm.get_engine("pg_bifrost_setup")
-        bifrost_database_name = os.getenv(bifrost.parameters.name, "bifrost")
-        pg_conn = PgDuckDbConnector(
-            database_name=bifrost_database_name, schema_name="data_contracts", engine=setup_engine
-        )
-        pg_conn.create_database()
-
-        bifrost_engine = orm.get_engine("pg_bifrost")
-        Contract.create_table(engine=bifrost_engine, checkfirst=checkfirst, create_schema=True)
         self.logs.debug("Bifrost Service setup complete.")
 
-    def list_all_contracts(self, contract_id: str | None = None, status: str | None = None) -> list[Contract]:
+    def list_all_contracts(self, contract_id: str | None = None, contract_version: str | None = None) -> list[Contract]:
         """List all contracts"""
-        with Session(self._orm) as session:
+
+        with Session(self._bifrost_orm) as session:
             stmt = select(Contract).options(
                 selectinload(Contract.schema).selectinload(ContractSchema.properties),
                 selectinload(Contract.servers),
@@ -70,8 +41,8 @@ class Service:
 
             if contract_id:
                 stmt = stmt.where(Contract.id == contract_id)
-            if status:
-                stmt = stmt.where(Contract.status == status)
+            if contract_version:
+                stmt = stmt.where(Contract.version == contract_version)
 
             res = session.exec(stmt).all()
 
@@ -81,3 +52,10 @@ class Service:
         """List all contracts"""
 
         return self.list_all_contracts(contract_id=contract_id)
+
+    def load_from_id_and_version(self, contract: Contract) -> list[Contract]:
+        """List all contracts"""
+
+        contract_id: str = contract.id
+        contract_version: str = contract.version
+        return self.list_all_contracts(contract_id=contract_id, contract_version=contract_version)

@@ -3,6 +3,7 @@
 import enum
 import os
 from collections import namedtuple
+from typing import NamedTuple
 from urllib.parse import quote
 
 from dotenv import load_dotenv
@@ -20,8 +21,6 @@ class OrmRelationalDatabaseConfig(BaseModel):
     user: str = Field(..., description="Database user")
     password: str = Field(..., description="Database user")
     auto_commit: bool | None = Field(default=True, description="Auto commit")
-
-    # engine: Engine | None = Field(default=None, description="Database engine")
 
 
 class OrmDuckLakeDatabaseConfig(OrmRelationalDatabaseConfig):
@@ -78,7 +77,7 @@ class Orm:
         """Get the database engine."""
         return self._engines_map.get(engine_name)
 
-    def _load_param_values(self, config: OrmConfig) -> namedtuple:
+    def _load_param_values(self, config: OrmConfig) -> NamedTuple:
         """Loads the ORM config from system variables."""
 
         self.logs.debug("Loading ORM config from system variables.")

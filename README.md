@@ -42,7 +42,7 @@ from bifrost.model.polyglot_config import PolyglotConfig
 from bifrost.model.polyglot_entity import (
     ColumnDataType, Entity, EntityColumn,
 )
-from bifrost.main import SugarPolyglot
+from cli import SugarPolyglot
 
 # 1) Describe your entity
 entity = Entity(
@@ -107,7 +107,7 @@ Notes:
 - If you prefer more control, you can use the lower-level `Polyglot` class:
 
 ```python
-from bifrost.main import Bifrost
+from cli import Bifrost
 
 poly = Bifrost(config)
 poly.create()  # create DDL

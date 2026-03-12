@@ -14,6 +14,9 @@ class ContractSchemaModel(CommonModel):
     __relationship_map__ = {"properties": sp.ContractSchemaPropertyModel}
     __composed_id_prefix__ = "dc-schema"
     __composed_id_columns__ = ["physical_type", "physical_name"]
+    __ignore_on_hash__ = [
+        "record_hash",
+    ]
 
     id: str | None = Field(
         default=None,
@@ -180,8 +183,8 @@ class ContractSchemaModel(CommonModel):
         sa_column=Column(
             name="record_hash",
             type_=p.VARCHAR_TYPE.value,
-            primary_key=True,
-            index=True,
+            primary_key=False,
+            index=False,
             autoincrement=False,
             nullable=True,
             comment="The hash of the record.",

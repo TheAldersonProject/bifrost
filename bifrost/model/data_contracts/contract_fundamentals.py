@@ -40,6 +40,9 @@ class ContractFundamentalsModel(CommonModel):
     }
     __composed_id_prefix__ = "dc"
     __composed_id_columns__ = ["name", "tenant", "domain", "physical_name"]
+    __ignore_on_hash__ = [
+        "record_hash",
+    ]
 
     api_version: Literal["v3.1.0"] | None = Field(
         default="v3.1.0",
@@ -110,8 +113,8 @@ class ContractFundamentalsModel(CommonModel):
             name="version",
             type_=p.VARCHAR_TYPE.value,
             default="0.0.1",
-            primary_key=False,
-            index=False,
+            primary_key=True,
+            index=True,
             autoincrement=False,
             nullable=False,
             comment="Current version of the data contract.",
@@ -119,7 +122,7 @@ class ContractFundamentalsModel(CommonModel):
         validation_alias=AliasChoices("version", "VERSION"),
     )
 
-    status: Literal["draft", "active", "deprecated"] | None = Field(
+    status: Literal["draft", "active", "deprecated", "latest"] | None = Field(
         default="draft",
         sa_column=Column(
             name="status",
@@ -230,8 +233,8 @@ class ContractFundamentalsModel(CommonModel):
         sa_column=Column(
             name="record_hash",
             type_=p.VARCHAR_TYPE.value,
-            primary_key=True,
-            index=True,
+            primary_key=False,
+            index=False,
             autoincrement=False,
             nullable=True,
             comment="The hash of the record.",

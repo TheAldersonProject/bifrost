@@ -7,18 +7,16 @@ from sqlalchemy import Engine, text
 class PgDuckDbConnector:
     """Postgres DuckDb Connector"""
 
-    def __init__(self, database_name: str, schema_name: str, engine: Engine):
+    def __init__(self, database_name: str, engine: Engine):
         """Postgres Connector"""
 
         self.logs = Logger.get_logger(logger_name=self.__class__.__name__)
         self._db_name = database_name
-        self._schema_name = schema_name
         self._engine: Engine = engine
 
         self.logs.debug(
             "Postgres Connector Initialized.",
             db=self._db_name,
-            schema=self._schema_name,
         )
 
     def create_database(self) -> None:

@@ -14,6 +14,9 @@ class ContractServerModel(CommonModel):
 
     __relationship_map__ = {"none": ""}
     __composed_id_prefix__ = "dc-srv"
+    __ignore_on_hash__ = [
+        "record_hash",
+    ]
     __composed_id_columns__ = [
         "environment",
         "server",
